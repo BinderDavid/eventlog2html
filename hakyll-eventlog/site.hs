@@ -59,16 +59,15 @@ renderEventlog p = bottomUpM insertEventlogs p
 
 insertEventlogs :: Block -> IO Block
 insertEventlogs block@(CodeBlock (ident, classes, attrs) code) | "eventlog" `elem` classes = do
-   let file = case lookup "file" attrs of
-                Just fn -> fn
-                Nothing -> error "Missing filepath"
-   d <- drawEventlog file
-   return (RawBlock (Format "html") d)
+   d <- drawEventlog (words code)
+   return (Div nullAttr [render code, RawBlock (Format "html") d])
 insertEventlogs block = print block >> return block
 
-drawEventlog :: FilePath -> IO String
-drawEventlog fp = do
-  as <- handleParseResult (execParserPure defaultPrefs argsInfo [fp])
-  dat <- generateJson fp as
+render c = CodeBlock nullAttr ("> eventlog2html " ++ c)
+
+drawEventlog :: [String] -> IO String
+drawEventlog args = do
+  as <- handleParseResult (execParserPure defaultPrefs argsInfo args)
+  dat <- generateJson (head $ files as) as
   return $ renderHtml $ renderChart dat vegaJsonText
 

@@ -26,7 +26,8 @@ In the current directory a file `my-leaky-program.eventlog` will be produced.
 This is what you need to pass to `eventlog2html` to generate the profiling
 graphs.
 
-```{.eventlog file=ghc.eventlog}
+```{.eventlog}
+ghc.eventlog
 ```
 
 
